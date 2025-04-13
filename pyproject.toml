@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "treeboard"
+version = "0.1.0"
+description = "tree based topology leaderboard"
+authors = ["Your Name <you@example.com>"]
+license = "MIT"
+readme = "README.md"
+
+[[tool.poetry.packages]]
+include = "TreeBoard"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+Flask = "^3.0.3"
+flask-sock = "^0.7.0"
+websocket-client = "^1.8.0"
+websockets = "^13.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
