@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Leaderboard</title>
+</head>
+<body>
+    <h1>Leaderboard</h1>
+    <div id="leaderboard-container">
+        <table id="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                <!-- Data will be inserted dynamically here -->
+            </tbody>
+        </table>
+    </div>
+
+    <h2>Add Player</h2>
+    <form id="add-player-form">
+        <input type="text" id="player-name" placeholder="Player Name" required>
+        <input type="number" id="player-score" placeholder="Score" required>
+        <button type="submit">Add Player</button>
+    </form>
+
+    <script>
+        // Fetch leaderboard data
+        async function fetchLeaderboard() {
+            const response = await fetch('/api/leaderboard');
+            const data = await response.json();
+            updateLeaderboardTable(data);
+        }
+
+        // Update the leaderboard table dynamically
+        function updateLeaderboardTable(data) {
+            const tableBody = document.getElementById('leaderboard-body');
+            tableBody.innerHTML = '';
+            data.forEach((player, index) => {
+                const row = `<tr>
+                                <td>${index + 1}</td>
+                                <td>${player.name}</td>
+                                <td>${player.score}</td>
+                             </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        // Add player to the leaderboard
+        document.getElementById('add-player-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const name = document.getElementById('player-name').value;
+            const score = document.getElementById('player-score').value;
+
+            await fetch('/api/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, score }),
+            });
+
+            document.getElementById('player-name').value = '';
+            document.getElementById('player-score').value = '';
+            fetchLeaderboard();
+        });
+
+        // Fetch leaderboard on page load
+        window.onload = fetchLeaderboard;
+    </script>
+</body>
+</html>
